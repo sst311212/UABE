@@ -1,4 +1,4 @@
-// ModInstaller.cpp : Definiert die exportierten Funktionen f¸r die DLL-Anwendung.
+// ModInstaller.cpp : Definiert die exportierten Funktionen fÅE die DLL-Anwendung.
 //
 
 #include "stdafx.h"
@@ -138,9 +138,9 @@ extern "C"
 {
 	//Initialize to 1 instead of 0 to make sure this field is not stripped from the .dll file as uninitialized data
 	__declspec(dllexport) DWORD delayResolveImportRVAs[32] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; //if one is null or 1, it's not imported
-	__declspec(dllexport) int APIENTRY _WinMain();
+	__declspec(dllexport) int _WinMain();
 }
-int APIENTRY _WinMain()
+int _WinMain()
 {
 #ifdef _DEBUG
 	MessageBox(NULL, 

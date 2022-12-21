@@ -220,7 +220,7 @@ ASSETSTOOLS_API bool AssetBundleHeader06::ReadInitial(IAssetsReader *pReader, As
 		if (curChar == 0) break;
 	}
 	signature[12] = 0;
-	
+
 	if (!strcmp(signature, "UnityArchive"))
 		this->fileVersion = 6;
 	else
@@ -248,7 +248,7 @@ ASSETSTOOLS_API bool AssetBundleHeader06::Read(IAssetsReader *pReader, AssetsFil
 		if (curChar == 0) break;
 	}
 	signature[12] = 0;
-	
+
 	if (!strcmp(signature, "UnityArchive"))
 		this->fileVersion = 6;
 	else
@@ -1020,6 +1020,15 @@ ASSETSTOOLS_API bool AssetBundleFile::Unpack(IAssetsReader *pReader, IAssetsWrit
 				QWORD oldUpFilePos = curUpFilePos;
 				list.Write(pWriter, curUpFilePos);
 				bundleHeader6.decompressedSize = (uint32_t)(curUpFilePos - oldUpFilePos);
+			}
+
+			if (bundleHeader6.fileVersion > 6)
+			{
+				curFilePos = (curFilePos + 15) & ~15;
+				pReader->SetPosition(curFilePos);
+				curUpFilePos = (curUpFilePos + 15) & ~15;
+				pWriter->SetPosition(curUpFilePos);
+				bundleHeader6.decompressedSize = (bundleHeader6.decompressedSize + 15) & ~15;
 			}
 
 			if (!res)
@@ -2396,6 +2405,13 @@ ASSETSTOOLS_API bool AssetBundleFile::Write(IAssetsReader *pReader,
 		blockAndDirList.directoryCount = (uint32_t)numOutputDirectories;
 		blockAndDirList.dirInf = directories.data();
 		blockAndDirList.Write(pWriter, curFilePos);
+
+		if (header.fileVersion > 6)
+		{
+			curFilePos = (curFilePos + 15) & ~15;
+			pWriter->SetPosition(curFilePos);
+		}
+
 		QWORD bundleDataPos = curFilePos;
 		//Fix the sizes
 		header.compressedSize = header.decompressedSize = (uint32_t)(curFilePos - blockAndDirListPos);

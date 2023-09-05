@@ -256,7 +256,7 @@ ASSETSTOOLS_API bool AssetBundleHeader06::Read(IAssetsReader *pReader, AssetsFil
 		if (!pReader->Read(-1, 4, &this->fileVersion))
 			goto __goto_readerror;
 		SwapEndians_(this->fileVersion);
-		if (this->fileVersion != 6 && this->fileVersion != 7)
+		if (this->fileVersion < 6 || this->fileVersion > 8)
 		{
 			if (errorLogger) errorLogger("That file version is unknown!");
 			return false;
